@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('mostra a tela inicial de busca', (tester) async {
+  testWidgets('CEP incompleto mostra validação antes de consultar a rede', (
+    tester,
+  ) async {
     await tester.pumpWidget(const ApiTaskApp());
-    expect(find.byType(TextField), findsOneWidget);
-    expect(find.text('Buscar endereço'), findsOneWidget);
+    await tester.enterText(find.byType(TextFormField), '123');
+    await tester.tap(find.text('Buscar endereço'));
+    await tester.pump();
+    expect(find.text('Digite um CEP com 8 dígitos.'), findsOneWidget);
+    expect(find.text('Endereço encontrado'), findsNothing);
   });
 }
